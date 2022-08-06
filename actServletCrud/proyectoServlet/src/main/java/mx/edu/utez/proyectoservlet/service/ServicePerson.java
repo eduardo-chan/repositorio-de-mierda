@@ -10,8 +10,7 @@ import java.util.List;
 public class ServicePerson {
     DaoPerson daoPerson = new DaoPerson();
 
-    public List<BeanPerson> showPersons(){
-        return daoPerson.showPersons();
+    public List<BeanPerson> showPersons(){return daoPerson.showPersons();
     }
 
     public ResultAction savePerson(BeanPerson person, InputStream image){

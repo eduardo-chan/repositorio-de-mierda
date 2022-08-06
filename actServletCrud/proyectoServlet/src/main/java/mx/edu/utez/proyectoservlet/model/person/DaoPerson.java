@@ -17,9 +17,13 @@ public class DaoPerson {
 
 
     //consultas
-    private final String GET_PERSONS = "SELECT * FROM person";
+    private final String GET_PERSONS = "SELECT * FROM person JOIN user ON person.id=user.person";
     private final String INSERT_PERSON = "INSERT INTO person (name, lastName, age, email, phone, birthday, image)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    private final String INSERT_USER = "INSERT INTO user (username, password, role, person)" +
+            "VALUES (?, ?, ?, ?)";
+
     private final String FIND_PERSON = "SELECT * FROM person WHERE id = ?";
     private final String UPDATE_PERSON = "UPDATE person SET name = ?, lastName = ?, age = ?, email = ?, phone = ?" +
             "WHERE id = ?";
@@ -39,7 +43,7 @@ public class DaoPerson {
             rs = pstm.executeQuery(); // ejecuta la sentencia
             while (rs.next()) {  //lo trae, verifica y recorre
                 person = new BeanPerson(); // crea el obj en BeanPerson
-                person.setId(rs.getLong("id"));
+                person.setId(rs.getLong("person.id"));
                 person.setName(rs.getString("name"));
                 person.setLastName(rs.getString("lastName"));
                 person.setAge(rs.getInt("age"));
@@ -49,6 +53,11 @@ public class DaoPerson {
                 byte[] image = rs.getBytes("image");
                 String imageSTR = Base64.getEncoder().encodeToString(image);
                 person.setImage(imageSTR);
+
+                person.setUsername(rs.getString("username"));
+                person.setPassword(rs.getString("password"));
+                person.setRole(rs.getString("role"));
+                person.setIdU(rs.getLong("user.id"));
                 //cada vez que llene el obj, lo añade a la lista
                 personList.add(person);
             }
@@ -67,7 +76,10 @@ public class DaoPerson {
         try {
             conn = new MySQLConnection().getConnection();
             String query = INSERT_PERSON; //crea
-            pstm = conn.prepareStatement(query); //prepara
+            //Statement.RETURN_GENERATED_KEYS sirve para retornar la última llave primaria que haya sido generada
+            //necesitamos verificar que nuestras tablas tengan la pk como auto_increment, en caso de que no
+            //no se va a poder utilizar
+            pstm = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS); //prepara
             pstm.setString(1, person.getName()); //mandar texto como primer parámetro
             pstm.setString(2, person.getLastName());
             pstm.setInt(3, person.getAge());
@@ -76,7 +88,18 @@ public class DaoPerson {
             pstm.setDate(6, new Date(person.getBirthday().getTime()));
             pstm.setBlob(7, image);
 
-            return pstm.executeUpdate()==1; //si es correcto devuelve un uno, si es erróneo devuelve 0
+            if (pstm.executeUpdate()==1){ //si es correcto devuelve un uno, si es erróneo devuelve 0
+                ResultSet lastIdPerson = pstm.getGeneratedKeys();
+                if (lastIdPerson.next()) {
+                    System.out.println(lastIdPerson.getLong(1));
+                    return saveUser(person.getUsername(), person.getPassword(), person.getRole(), lastIdPerson.getLong(1));
+                }else {
+                    return false;
+                }
+            } else{
+                return false;
+            }
+
         }catch (SQLException e) {
             Logger.getLogger(DaoPerson.class.getName())
                     .log(Level.SEVERE, "error en savePerson -> ", e);
@@ -85,6 +108,27 @@ public class DaoPerson {
             closeConnections();
         }
     }
+
+    //------------------------------------------------------------------------------------------------------
+
+    public boolean saveUser(String username, String password, String role, Long person){
+        try {
+            //conn = new MySQLConnection().getConnection();
+            String query = INSERT_USER;
+            pstm = conn.prepareStatement(query); //prepara
+            pstm.setString(1, username); //mandar texto como primer parámetro
+            pstm.setString(2, password);
+            pstm.setString(3, role);
+            pstm.setLong(4, person);
+            return pstm.executeUpdate() == 1;
+        }catch (SQLException e) {
+            Logger.getLogger(DaoPerson.class.getName())
+                    .log(Level.SEVERE, "error en saveUser -> ", e);
+            return false;
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------
 
     public BeanPerson findPerson (Long id){
         try {

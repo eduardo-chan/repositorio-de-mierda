@@ -90,6 +90,11 @@ public class ServletPerson extends HttpServlet {
                 Part filePart = request.getPart("image");
                 InputStream image = filePart.getInputStream();
 
+                String username = request.getParameter("username");
+                String password = request.getParameter("password");
+                String role = request.getParameter("role");
+                System.out.println(username + " " + password + " " + role);
+
 
                 try {
                 //guardamos
@@ -99,10 +104,12 @@ public class ServletPerson extends HttpServlet {
                 person.setAge(Integer.parseInt(age)); //lo pasamos a int
                 person.setEmail(email);
                 person.setPhone(phone);
+                Date birthdaySDF = new SimpleDateFormat( "yyyy-MM-dd").parse(birthday);
+                person.setBirthday(birthdaySDF);
 
-
-                    Date birthdaySDF = new SimpleDateFormat( "yyyy-MM-dd").parse(birthday);
-                    person.setBirthday(birthdaySDF);
+                person.setUsername(username);
+                person.setPassword(password);
+                person.setRole(role);
 
                     ResultAction result = servicePerson.savePerson(person, image);
                     urlRedirect = "/getPersons?=result="+ result.isResult()

@@ -6,16 +6,16 @@ import java.sql.SQLException;
 
 public class MySQLConnection {
     public Connection getConnection(){
-        final String DBNAME = "utex",
-                USERNAME = "cesar",
-                PASSWORD = "cesar",
+        final String DBNAME = "utex2",
+                USERNAME = "root",
+                PASSWORD = "root",
                 TIMEZONE = "America/Mexico_City",
-                USESSL = "true",       //conexiones remotas
+                USESSL = "true",       //conexiones remotas//
                 PUBLICKEY = "true";
 
-
+        //192.168.62.185
         //hacemos la conexión
-        String dataSource = String.format("jdbc:mysql://192.168.62.185:3306/%s?user=%s&password=%s&serverTimeZone=" +
+        String dataSource = String.format("jdbc:mysql://localhost:3306/%s?user=%s&password=%s&serverTimeZone=" +
                 "%s&useSSL=%s&allowPublickeyRetrieval=%s",
                 DBNAME, USERNAME, PASSWORD, TIMEZONE, USESSL, PUBLICKEY);    //pasar parametros
 

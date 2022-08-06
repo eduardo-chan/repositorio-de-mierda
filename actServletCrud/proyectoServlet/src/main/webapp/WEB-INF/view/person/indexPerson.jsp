@@ -48,6 +48,8 @@
                             <th scope="col">Perfil</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Apellido</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Rol</th>
                             <th scope="col">Edad</th>
                             <th scope="col">Fecha de nacimiento</th>
                             <th scope="col">Correo</th>
@@ -67,6 +69,8 @@
                                          alt="Avatar" /></td>
                                 <td><c:out value="${person.name}"></c:out></td>
                                 <td><c:out value="${person.lastName}"></c:out></td>
+                                <td><c:out value="${person.username}"></c:out></td>
+                                <td><c:out value="${person.role}"></c:out></td>
                                 <td><c:out value="${person.age}"></c:out></td>
                                 <td><fmt:formatDate value="${person.birthday}" pattern="dd/MM/yyyy"/></td>
                                 <td><c:out value="${person.email}"></c:out></td>

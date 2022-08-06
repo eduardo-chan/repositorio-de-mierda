@@ -14,10 +14,15 @@ public class BeanPerson {
 
     private String image;   //cuando tenga a mi obj, lo ocupo
 
+    private long idU;
+    private String username;
+    private String password;
+    private String role;
+
     public BeanPerson() {
     }
 
-    public BeanPerson(long id, String name, String lastName, String email, int age, String phone, Date birthday) {
+    public BeanPerson(long id, String name, String lastName, String email, int age, String phone, Date birthday, String image, long idU, String username, String password, String role) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -25,7 +30,11 @@ public class BeanPerson {
         this.age = age;
         this.phone = phone;
         this.birthday = birthday;
-
+        this.image = image;
+        this.idU = idU;
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 
     public long getId() {
@@ -86,6 +95,38 @@ public class BeanPerson {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public long getIdU() {
+        return idU;
+    }
+
+    public void setIdU(long idU) {
+        this.idU = idU;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 
